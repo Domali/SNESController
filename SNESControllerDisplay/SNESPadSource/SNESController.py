@@ -37,7 +37,7 @@ class SNESController:
     BTN_X = 9
     BTN_L = 10
     BTN_R = 11
-
+    
     #Function to update the button data
     def update(self,data):
         self.displaySurface.blit(self.SNESBaseImg,(0,0))
@@ -53,17 +53,53 @@ class SNESController:
         self.buttonUpdate(self.DPadRightImg,self.BTN_DPR,data)
         self.buttonUpdate(self.DPadUpImg,self.BTN_DPU,data)
         self.buttonUpdate(self.DPadDownImg,self.BTN_DPD,data)
-
+        
     def buttonUpdate(self,img,btn,data):
         if data[-(btn + 3)] == '0':
             if self.btnPrev[btn] == 0:
                 self.btnArray[btn] += 1
                 self.btnPrev[btn] = 1
-
-            self.displaySurface.blit(img,(int(self.xyConfig[btn][0]),int(self.xyConfig[btn][1])))
+                self.updateButtonUsageDisplay()
+            self.displaySurface.blit(img,(int(self.xyConfig[btn][0]),
+                                          int(self.xyConfig[btn][1])))
         else:
             self.btnPrev[btn] = 0
 
+    def printText(self,text,x,y):
+        font = pygame.font.Font(None, 24)
+        text = font.render(text, 0, (255, 255, 255))
+        textpos = (x,y)
+        self.displaySurface.blit(text, textpos)
+        
+    def updateButtonUsageDisplay(self):
+        xBase = 0
+        yBase = 202
+        pygame.draw.rect(self.displaySurface,(0,0,0),(0,201,400,80))
+        self.printText("A:",xBase,yBase)
+        self.printText(str(self.btnArray[self.BTN_A]),xBase + 20,yBase)
+        self.printText("B:",xBase + 1, yBase + 15)
+        self.printText(str(self.btnArray[self.BTN_B]),xBase + 20, yBase + 15)
+        self.printText("X:",xBase + 1, yBase + 30)
+        self.printText(str(self.btnArray[self.BTN_X]), xBase + 20, yBase + 30)
+        self.printText("Y:", xBase + 2, yBase + 45)
+        self.printText(str(self.btnArray[self.BTN_Y]),xBase + 20, yBase + 45)
+        self.printText("Up:", xBase + 133, yBase)
+        self.printText(str(self.btnArray[self.BTN_DPU]),xBase + 183, yBase)
+        self.printText("Down:", xBase + 133, yBase + 15)
+        self.printText(str(self.btnArray[self.BTN_DPD]), xBase + 183, yBase + 15)
+        self.printText("Left:", xBase + 133, yBase + 30)
+        self.printText(str(self.btnArray[self.BTN_DPL]), xBase + 183, yBase + 30)
+        self.printText("Right:", xBase + 133, yBase + 45)
+        self.printText(str(self.btnArray[self.BTN_DPR]), xBase + 183, yBase + 45)
+        self.printText("L:", xBase + 266, yBase)
+        self.printText(str(self.btnArray[self.BTN_L]), xBase + 330, yBase)
+        self.printText("R:", xBase + 266, yBase + 15)
+        self.printText(str(self.btnArray[self.BTN_R]), xBase + 330, yBase + 15)
+        self.printText("Select:", xBase + 266, yBase + 30)
+        self.printText(str(self.btnArray[self.BTN_SELECT]), xBase + 330, yBase + 30)
+        self.printText("Start:", xBase + 266, yBase + 45)
+        self.printText(str(self.btnArray[self.BTN_START]), xBase + 330, yBase + 45)
+        
     def __init__(self,pysurface):
         #The surface to print to
         self.displaySurface = pysurface
@@ -74,7 +110,7 @@ class SNESController:
         for i in self.btnArray:
             self.btnArray[i] = 0
             self.btnPrev[i] = 0
-
+        self.updateButtonUsageDisplay()
         #Variable to hold the x and y configuration fort he images
         self.xyConfig = []
         config = open('images.cfg','r')

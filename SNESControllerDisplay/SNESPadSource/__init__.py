@@ -11,7 +11,7 @@ from serial.tools.list_ports import grep
 
 #Initialize the GUI and set the resolution
 pygame.init()
-DISPLAYSURF = pygame.display.set_mode((400, 200))
+DISPLAYSURF = pygame.display.set_mode((400, 265))
 
 timeQueue = []
 buttonsQueue = []
@@ -42,6 +42,7 @@ def main():
                 ser.close()
                 pygame.quit()
                 sys.exit()
+
         pygame.display.update()
 
 if __name__ == "__main__":
