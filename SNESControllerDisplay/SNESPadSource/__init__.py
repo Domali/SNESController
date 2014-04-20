@@ -13,9 +13,6 @@ from serial.tools.list_ports import grep
 pygame.init()
 DISPLAYSURF = pygame.display.set_mode((400, 265))
 
-timeQueue = []
-buttonsQueue = []
-
 def main():
     pygame.display.set_caption('Domalix SNES Controller Display')
 
@@ -35,11 +32,12 @@ def main():
     while True: # main game loop
         if ser.inWaiting() > 0:
             data = ser.readline()
-            controller.update(data)
+            controller.buttonUpdate(data)
 
         for event in pygame.event.get():
             if event.type == QUIT:
                 ser.close()
+                controller.quit()
                 pygame.quit()
                 sys.exit()
 
