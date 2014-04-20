@@ -39,23 +39,33 @@ class SNESController:
         self.displaySurface.blit(self.base_image,(0,0))
         xBase = 0
         yBase = 202
-        pygame.draw.rect(self.displaySurface,(0,0,0),(xBase,yBase,400,80))
+        change = False
         for i in self.button_list:
             if data[-(i.getButtonBit() + 3)] == '0':
                 i.incrementTime()
                 if i.getPreviousState() == False:
+                    change = True
                     i.buttonPressed()
                 self.displaySurface.blit(
                             i.getImage(),(i.getImageX(),i.getImageY()))
             else:
                 i.buttonNotPressed()
-            self.printText(i.getButtonText(),
-                           xBase + i.getTextX(), 
-                           yBase + i.getTextY())
-            self.printText(str(i.getSessionMileage()),
-                           xBase + i.getTextX() + i.getTextOffset(), 
-                           yBase + i.getTextY())
-
+        '''
+        The following section was hacked together because evidentally
+        python doesn't like doing a whole lot of text rendering... so now
+        I'm only rendering text when a button change happens.  Before this code
+        was located in the previous for loop and simply rendered the text every
+        time.  This is code that needs to be looked into
+        '''
+        if change == True:
+            pygame.draw.rect(self.displaySurface,(0,0,0),(xBase,yBase,400,80))
+            for i in self.button_list:
+                self.printText(i.getButtonText(),
+                               xBase + i.getTextX(), 
+                               yBase + i.getTextY())
+                self.printText(str(i.getSessionMileage()),
+                               xBase + i.getTextX() + i.getTextOffset(), 
+                               yBase + i.getTextY())
     def printText(self,text,x,y):
         font = pygame.font.Font(None, 24)
         text = font.render(text, 0, (255, 255, 255))

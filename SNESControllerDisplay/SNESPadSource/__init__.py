@@ -30,9 +30,8 @@ def main():
 
     controller = SNESController.SNESController(DISPLAYSURF)
     while True: # main game loop
-        if ser.inWaiting() > 0:
-            data = ser.readline()
-            controller.buttonUpdate(data)
+        data = ser.readline()
+        controller.buttonUpdate(data)
 
         for event in pygame.event.get():
             if event.type == QUIT:
