@@ -4,6 +4,7 @@ Created on Apr 19, 2014
 @author: Domali
 '''
 import pygame
+
 class controllerButton(object):
     '''
     classdocs
@@ -27,7 +28,13 @@ class controllerButton(object):
         self.session_mileage = 0
         self.previous_state = False
         self.unfixed_total_time = 0
+        self.font = pygame.font.Font(None, 24)
+        self.rendered_text = self.font.render(self.button_name, 0, (255, 255, 255))
+        self.renderMileageText()
     
+    def getMileageImage(self):
+        return self.rendered_mileage_text
+        
     def getImage(self):
         return self.image_file
     
@@ -45,11 +52,16 @@ class controllerButton(object):
     
     def incrementTime(self):
         self.unfixed_total_time += 1
+    
+    def renderMileageText(self):
+        self.rendered_mileage_text = self.font.render(
+                                str(self.session_mileage), 0, (255, 255, 255))
         
     def buttonPressed(self):
         self.previous_state = True
         self.session_mileage += 1
         self.total_mileage += 1
+        self.renderMileageText()
         
     def buttonNotPressed(self):
         self.previous_state = False
@@ -68,6 +80,9 @@ class controllerButton(object):
     
     def getSessionMileage(self):
         return int(self.session_mileage)
+    
+    def getRenderedText(self):
+        return self.rendered_text
     
     def toString(self):
         return self.__str__()

@@ -28,20 +28,18 @@ class SNESController:
             config_file_data += i.toString() + '\n'
         config_file_data = config_file_data.rstrip()
         f.write(config_file_data)
-        os.remove('button.cfg.tmp')
         f.close()
-        
+        os.remove('button.cfg.tmp')
+
     def quit(self):
         self.saveConfig()
 
     #Function to update the button data
     def buttonUpdate(self,data):
         self.displaySurface.blit(self.base_image,(0,0))
-        xBase = 0
-        yBase = 202
         change = False
         for i in self.button_list:
-            if data[-(i.getButtonBit() + 3)] == '0':
+            if data[-(i.getButtonBit() + 1)] == '0':
                 i.incrementTime()
                 if i.getPreviousState() == False:
                     change = True
@@ -50,32 +48,28 @@ class SNESController:
                             i.getImage(),(i.getImageX(),i.getImageY()))
             else:
                 i.buttonNotPressed()
-        '''
-        The following section was hacked together because evidentally
-        python doesn't like doing a whole lot of text rendering... so now
-        I'm only rendering text when a button change happens.  Before this code
-        was located in the previous for loop and simply rendered the text every
-        time.  This is code that needs to be looked into
-        '''
         if change == True:
-            pygame.draw.rect(self.displaySurface,(0,0,0),(xBase,yBase,400,80))
-            for i in self.button_list:
-                self.printText(i.getButtonText(),
-                               xBase + i.getTextX(), 
-                               yBase + i.getTextY())
-                self.printText(str(i.getSessionMileage()),
-                               xBase + i.getTextX() + i.getTextOffset(), 
-                               yBase + i.getTextY())
-    def printText(self,text,x,y):
-        font = pygame.font.Font(None, 24)
-        text = font.render(text, 0, (255, 255, 255))
-        textpos = (x,y)
-        self.displaySurface.blit(text, textpos)
-        
+            self.mileageDisplayUpdate()
+
+    def mileageDisplayUpdate(self):
+        pygame.draw.rect(self.displaySurface,(0,0,0),
+                             (self.xBase,self.yBase,400,80))
+        for i in self.button_list:
+            self.displaySurface.blit(i.getRenderedText(),
+                           (self.xBase + i.getTextX(),
+                           self.yBase + i.getTextY()))
+            self.displaySurface.blit(i.getMileageImage(),
+                           (self.xBase + i.getTextX() + i.getTextOffset(),
+                           self.yBase + i.getTextY()))
+
     def __init__(self,pysurface):
         #The surface to print to
+        self.xBase = 0
+        self.yBase = 202
         self.displaySurface = pysurface
-        self.base_image_string = ""
+        self.base_image_string = None
         self.button_list = []
         self.loadConfig(self.button_list)
         self.base_image = pygame.image.load(self.base_image_string)
+        self.displaySurface.blit(self.base_image,(0,0))
+        self.mileageDisplayUpdate()
