@@ -3,13 +3,13 @@ Created on March 15, 2014
 
 @author: Domali
 '''
-import pygame, sys, serial, datetime, time
+import pygame 
+import sys 
+import serial
 import SNESController
 from pygame.locals import *
 from serial import tools
 from serial.tools.list_ports import grep
-from datetime import datetime
-from datetime import timedelta
 
 #Initialize the GUI and set the resolution
 pygame.init()
@@ -31,17 +31,11 @@ def main():
         sys.exit()
 
     controller = SNESController.SNESController(DISPLAYSURF)
-    time_list = []
-    time_delay = 0
-    
+    controller.toggleLogging(
+                             )
     while True: # main game loop
         data = ser.readline().rstrip()
-        current_time = datetime.now()
-        time_list.append([current_time,data])
-        difference = current_time - time_list[0][0]
-        difference = (difference.days * 24 * 60 * 60 + difference.seconds) * 1000 + difference.microseconds / 1000
-        if difference > time_delay:
-            controller.buttonUpdate(time_list.pop(0)[1])
+        controller.update(data)
         
         for event in pygame.event.get():
             if event.type == QUIT:
